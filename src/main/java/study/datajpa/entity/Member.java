@@ -10,6 +10,12 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id", "username", "age"})
+@Setter
+@NamedQuery(
+        name="Member.findByUsername",
+        query="select m from Member m where m.username = :username"
+)
+@NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
 @AllArgsConstructor
 public class Member {
 
@@ -22,6 +28,7 @@ public class Member {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
+    @ToString.Exclude
     private Team team;
 
     public Member(String username, int age, Team team) {
@@ -34,6 +41,11 @@ public class Member {
 
     public Member(String username) {
         this.username = username;
+    }
+
+    public Member(String username, int age) {
+        this.username = username;
+        this.age = age;
     }
 
     public void changeTeam(Team team) {
